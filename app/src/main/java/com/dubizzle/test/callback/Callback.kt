@@ -1,5 +1,7 @@
 package com.dubizzle.test.callback
 
-interface Callback<T> {
-    fun onItemClick(item: T)
+import androidx.databinding.ViewDataBinding
+
+interface Callback<T, B : ViewDataBinding> {
+    fun onItemClick(item: T, binding: B)
 }

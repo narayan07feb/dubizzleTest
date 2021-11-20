@@ -11,7 +11,7 @@ import com.dubizzle.test.domain.model.IResults
 class DataListAdapter(
     private val context: Context,
     private val items: ArrayList<IResults>,
-    private val callback: Callback<IResults>?
+    private val callback: Callback<IResults, RowListBinding>?
 ) :
     RecyclerView.Adapter<DataListAdapter.DataViewHolder>() {
 
@@ -34,7 +34,7 @@ class DataListAdapter(
 
         init {
             binding.root.setOnClickListener {
-                callback?.onItemClick(items[adapterPosition])
+                callback?.onItemClick(items[adapterPosition], binding)
             }
         }
 

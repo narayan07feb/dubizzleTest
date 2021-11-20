@@ -21,6 +21,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="100dp"
                 android:id="@+id/thumbImage"
+                android:transitionName="@string/transition_image"
                 android:layout_margin="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:imageUrl="@{result.imageUrlsThumbnails[0]}"
@@ -31,6 +32,7 @@
             <TextView
                 android:id="@+id/name"
                 android:text="@{result.name}"
+                android:transitionName="@string/transition_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:layout_margin="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -40,6 +42,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:transitionName="@string/transition_price"
                 android:id="@+id/price"
                 android:text="@{result.price}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
