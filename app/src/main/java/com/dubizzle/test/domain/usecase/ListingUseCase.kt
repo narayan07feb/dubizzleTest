@@ -7,8 +7,9 @@ import com.dubizzle.test.domain.repository.IListingRepository
 import com.dubizzle.test.domain.usecase.base.UseCase
 import javax.inject.Inject
 
-class ListingUseCase @Inject constructor(private val repo: IListingRepository) : UseCase<Unit, IData>() {
+class ListingUseCase @Inject constructor(private val repo: IListingRepository) :
+    UseCase<Unit, IData>() {
     override suspend fun run(params: Unit): Result<IFailure, IData> {
-        return repo.getListing()
+        return repo.getListing();
     }
 }

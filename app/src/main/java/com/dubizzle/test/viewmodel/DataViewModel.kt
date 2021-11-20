@@ -11,15 +11,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DataViewModel @Inject constructor(private val listingUseCase: ListingUseCase) : ViewModel() {
-    init {
-        fetchData()
-    }
-
     private var mResults = SingleLiveEvent<List<IResults>>();
     val results = mResults as LiveData<List<IResults>>
+    private var mLoader = SingleLiveEvent<Boolean>();
+    val loader = mLoader as LiveData<Boolean>;
 
-    private fun fetchData() {
+    fun fetchData() {
+        mLoader.postValue(true)
         listingUseCase.invoke(viewModelScope, params = Unit, onSuccess = {
+            mLoader.postValue(false)
             mResults.postValue(it.result);
         })
     }

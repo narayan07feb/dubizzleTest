@@ -8,10 +8,12 @@ sealed class Result<out E, out RS> where RS : Any? {
 
     val isSuccess get() = this is Success<RS>
 
-    fun transform(fnL: (E) -> Any, fnR: (RS) -> Any): Any = {
-        when (this) {
-            is Error -> fnL(errorVal)
-            is Success -> fnR(successsVal)
+    fun transform(fnL: (E) -> Any, fnR: (RS) -> Any): Any {
+        return when (this) {
+            is Error ->
+                fnL(errorVal)
+            is Success ->
+                fnR(successsVal)
         }
     }
 

@@ -4,9 +4,8 @@ import com.dubizzle.test.common.Failure
 import com.dubizzle.test.common.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 
-suspend inline fun <T, X> safeApiCall(
+suspend inline fun <T, reified X> safeApiCall(
     dispatcher: CoroutineDispatcher,
     crossinline apiCall: suspend () -> T, successTransform: (T) -> X
 ): Result<Failure, X> {
@@ -14,12 +13,8 @@ suspend inline fun <T, X> safeApiCall(
         val response = withContext(dispatcher) {
             apiCall.invoke()
         }
-        if (response is Response<*>) {
-            if (response.isSuccessful) {
-                Result.Success(successTransform(response))
-            } else {
-                Result.Error(Failure("Internal server error"));
-            }
+        if (response is X) {
+            Result.Success(successTransform(response))
         } else {
             Result.Error(Failure("Internal server error"));
         }

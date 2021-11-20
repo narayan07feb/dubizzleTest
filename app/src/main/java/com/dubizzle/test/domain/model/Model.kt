@@ -1,11 +1,13 @@
 package com.dubizzle.test.domain.model
 
-interface IData {
+import android.os.Parcelable
+
+interface IData : Parcelable {
     val result: List<IResults>
     val pagination: IPagination
 }
 
-interface IResults {
+interface IResults : Parcelable {
     val createdAt: String
     val price: String
     val name: String
@@ -15,7 +17,7 @@ interface IResults {
     val imageUrlsThumbnails: List<String>
 }
 
-interface IPagination {
+interface IPagination : Parcelable {
     val key: String
 
 }

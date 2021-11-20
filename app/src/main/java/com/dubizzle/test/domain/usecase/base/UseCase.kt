@@ -1,7 +1,7 @@
 package com.dubizzle.test.domain.usecase.base
 
-import com.dubizzle.test.common.Result
 import com.dubizzle.test.common.IFailure
+import com.dubizzle.test.common.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -19,7 +19,8 @@ abstract class UseCase<in Params, out Type> where Type : Any? {
             run(params)
         }
         scope.launch {
-            job.await().transform(onFailure, onSuccess)
+            val item = job.await()
+            item.transform(onFailure, onSuccess)
         }
     }
 
