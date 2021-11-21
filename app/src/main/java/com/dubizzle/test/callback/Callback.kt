@@ -1,7 +1,8 @@
 package com.dubizzle.test.callback
 
-import androidx.databinding.ViewDataBinding
+import android.util.Pair
+import android.view.View
 
-interface Callback<T, B : ViewDataBinding> {
-    fun onItemClick(item: T, binding: B)
+interface Callback<T> {
+    fun onItemClick(item: T, vararg sharedPair: Pair<View, String>)
 }

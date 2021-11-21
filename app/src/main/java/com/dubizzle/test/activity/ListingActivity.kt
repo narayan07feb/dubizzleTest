@@ -3,6 +3,7 @@ package com.dubizzle.test.activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,15 +12,13 @@ import com.dubizzle.test.adapter.DataListAdapter
 import com.dubizzle.test.callback.Callback
 import com.dubizzle.test.common.CommonConstant
 import com.dubizzle.test.databinding.ActivityListingBinding
-import com.dubizzle.test.databinding.RowListBinding
 import com.dubizzle.test.domain.model.IResults
 import com.dubizzle.test.viewmodel.DataViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import android.util.Pair as sharedPair
 
 
 @AndroidEntryPoint
-class ListingActivity : AppCompatActivity(), Callback<IResults, RowListBinding> {
+class ListingActivity : AppCompatActivity(), Callback<IResults> {
 
     private val binding: ActivityListingBinding by lazy {
         ActivityListingBinding.inflate(layoutInflater)
@@ -40,7 +39,7 @@ class ListingActivity : AppCompatActivity(), Callback<IResults, RowListBinding> 
         }
 
         dataViewModel.results.observe(this, {
-            updatedata(it)
+            updatedata(it.result)
         });
         dataViewModel.fetchData()
 
@@ -53,16 +52,14 @@ class ListingActivity : AppCompatActivity(), Callback<IResults, RowListBinding> 
         adapter.notifyDataSetChanged()
     }
 
-    override fun onItemClick(item: IResults, binding: RowListBinding) {
-        val image = sharedPair.create(binding.thumbImage as View, binding.thumbImage.transitionName)
-        val name = sharedPair.create(binding.name as View, binding.name.transitionName)
-        val price = sharedPair.create(binding.price as View, binding.price.transitionName)
-        val transitionActivityOptions: ActivityOptions =
+
+    override fun onItemClick(item: IResults, vararg sharedPair: Pair<View, String>) {
+        val transitionActivityOptions = sharedPair?.let {
             ActivityOptions.makeSceneTransitionAnimation(
                 this,
-                image,
-                name, price
+                *sharedPair
             )
+        }
 
         val intent = Intent(this, DetailActivity::class.java);
         intent.putExtra(CommonConstant.DATA, item)
