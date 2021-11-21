@@ -7,6 +7,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 abstract class UseCase<in Params, out Type> where Type : Any? {
+
     abstract suspend fun run(params: Params): Result<IFailure, Type>
 
     operator fun invoke(
@@ -15,6 +16,7 @@ abstract class UseCase<in Params, out Type> where Type : Any? {
         onSuccess: (Type) -> Unit = {},
         onFailure: (IFailure) -> Unit = {}
     ) {
+
         val job = scope.async {
             run(params)
         }

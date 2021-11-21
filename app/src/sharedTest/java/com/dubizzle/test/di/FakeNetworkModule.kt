@@ -25,7 +25,7 @@ object FakeApiServiceModule {
     @Provides
     @Singleton
     fun castFakeService(service: ApiService): FakeApiService {
-        return service as FakeApiService;
+        return service as FakeApiService
     }
 
 

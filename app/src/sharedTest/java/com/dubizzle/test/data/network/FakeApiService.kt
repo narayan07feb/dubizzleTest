@@ -1,6 +1,6 @@
 package com.dubizzle.test.data.network
 
-import com.dubizzle.test.JsonProvider
+import com.dubizzle.JsonProvider
 import com.dubizzle.test.data.model.Data
 import com.dubizzle.test.data.network.services.ApiService
 
@@ -10,7 +10,7 @@ class FakeApiService : ApiService {
 
         if (failUserApi) throw Exception("Api failed")
         val fakeResponse: Data = JsonProvider.objectFromJsonFileWithType(response)
-        return fakeResponse;
+        return fakeResponse
     }
 
     companion object {

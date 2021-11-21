@@ -1,4 +1,4 @@
-package com.dubizzle.test
+package com.dubizzle
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
