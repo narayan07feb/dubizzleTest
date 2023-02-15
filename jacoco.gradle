@@ -1,20 +1,163 @@
+apply plugin: 'jacoco'
+jacoco {
+    toolVersion = "0.8.7"
+}
+project.afterEvaluate {
+    if (android.hasProperty("applicationVariants")) {
+        android.applicationVariants.all { variant ->
+            createVariantCoverage(variant)
+        }
+    } else if (android.hasProperty("libraryVariants")) {
+        android.libraryVariants.all { variant ->
+            createVariantCoverage(variant)
+        }
+    }
+}
+ext.excludes = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Test*.*',
+        'android/**/*.*',
+        'androidx/**/*.*',
+        '**/*$ViewInjector*.*',
+        '**/*Dagger*.*',
+        '**/*MembersInjector*.*',
+        '**/*_Factory.*',
+        '**/*_Provide*Factory*.*',
+        '**/*_ViewBinding*.*',
+        '**/AutoValue_*.*',
+        '**/R2.class',
+        '**/R2$*.class',
+        '**/*Directions$*',
+        '**/*Directions.*',
+        '**/*Binding.*',
+        /* debug package */
+        '**/debug/**/**.class',
+        /* Generated classes */
+        "*.BuildConfig",
+        "*.*ViewInjector*",
+        "*.*MembersInjector",
+        "*.*_Factory*",
+        "*.*_*Factory*",
+        "*.*_Provide*Factory",
+        "*.Hilt_*",
+        "*.*_HiltModules*",
+        "*.*FragmentDirections*",
+        "*.*FragmentArgs*",
+        "*.*Binding*",
+        "*.*_Impl*",
+        "*.*HiltWrapper_*",
+        "dagger.hilt.internal.*",
+        "**/hilt_aggregated_deps/**.class",
+        // data binding
+        '**/dagger.hilt.internal.aggregatedroot.codegen/**.class',
+        'android/databinding/**/*.class',
+        '**/android/databinding/*Binding.class',
+        '**/android/databinding/*',
+        '**/androidx/databinding/*',
+        '**/BR.*',
+        '**/databinding/*',
+        '*binding*',
+        '**/com.moengage.push.amp/**.class',
 
-rootCoverage {
-    // The default build variant for every module
-    buildVariant "debug"
-    // Overrides the default build variant for specific modules.
+        /* UI classes */
+        "*.*Fragment*",
+        "*.*Adapter*",
+        "*.*ViewHolder*",
+        "*.*Preference",
+        "*.*Preference\$*",
+        "*.*Dialog",
+        "*.*View",
+        "*.*View\$*",
+        "*.*TextCreator*",
 
-    // Since 1.1 generateHtml is by default true
-    generateXml true
+        /* Hilt modules */
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Dagger*.*',
+        '**/*_ViewBinding.*',
+        '**/*_Impl.*',
+        '**/Hilt_*.*',
+        '**/Hilt_*/*.*',
+        '**/Dagger*.*',
+        '**/Dagger*/*.*',
+        '**/*HiltComponent*.*',
+        '**/*HiltWrapper*.*',
+        '**/*HiltModule*.*',
+        '**/*Hilt*Factory*.*',
+        '**/*Composable.*',
+        '**/*_Companion.*',
+        '**/*Preview.*',
+        '**/*ThemedPreview.*',
+        '**/*ColorsKt.*',
+        '**/JetpackComposePreviewer*.*',
+        '**/JetpackComposePreview*.*',
+        '**/package-info.*',
+        '**/*Activity*.*',
+        '**/*Fragment*.*',
+        '**/*Adapter*.*',
+        '**/*ViewHolder*.*',
+        '**/*ItemDecoration*.*',
+        '**/*LayoutManager*.*'
 
-    executeUnitTests true
+]
+def createVariantCoverage(variant) {
+    def variantName = variant.name
+    def testTaskName = "test${variantName.capitalize()}UnitTest"
 
-    // Since 1.2: When true include results from instrumented Android tests into the coverage report
-    includeAndroidTestResults false
+    // Add unit test coverage tasks
+    tasks.create(name: "${testTaskName}Coverage", type: JacocoReport, dependsOn: "$testTaskName") {
+        group = "Reporting"
+        description = "Generate Jacoco coverage reports for the ${variantName.capitalize()} build."
 
-    // Since 1.2: When true include results from unit tests into the coverage report
-    includeUnitTestResults true
-    // Since 1.4: Sets jacoco.includeNoLocationClasses, so you don't have to. Helpful when using Robolectric
-    // which usually requires this attribute to be true
-    includeNoLocationClasses false
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        def javaClasses = fileTree(dir: variant.javaCompileProvider.get().destinationDir, excludes: project.excludes)
+        def kotlinClasses = fileTree(dir: "${buildDir}/tmp/kotlin-classes/${variantName}", excludes: project.excludes)
+        getClassDirectories().setFrom(files([javaClasses, kotlinClasses]))
+
+        getSourceDirectories().setFrom(files([
+                "$project.projectDir/src/main/java",
+                "$project.projectDir/src/${variantName}/java",
+                "$project.projectDir/src/main/kotlin",
+                "$project.projectDir/src/${variantName}/kotlin"
+        ]))
+
+        getExecutionData().setFrom(files("${project.buildDir}/outputs/unit_test_code_coverage/${variantName}UnitTest/${testTaskName}.exec"))
+
+        doLast {
+            def m = new File("${project.buildDir}/reports/jacoco/${testTaskName}Coverage/html/index.html")
+                    .text =~ /Total[^%]*>(\d?\d?\d?%)/
+            if (m) {
+                println "Test coverage: ${m[0][1]}"
+            }
+        }
+    }
+
+    // Add unit test coverage verification tasks
+    tasks.create(name: "${testTaskName}CoverageVerification", type: JacocoCoverageVerification, dependsOn: "${testTaskName}Coverage") {
+        tasks.withType(Test) {
+            jacoco.includeNoLocationClasses = true
+            jacoco.excludes = ['jdk.internal.*']
+        }
+        group = "Reporting"
+        description = "Verifies Jacoco coverage for the ${variantName.capitalize()} build."
+        def javaClasses = fileTree(dir: variant.javaCompileProvider.get().destinationDir, excludes: project.excludes)
+        def kotlinClasses = fileTree(dir: "${buildDir}/tmp/kotlin-classes/${variantName}", excludes: project.excludes)
+        getClassDirectories().setFrom(files([javaClasses, kotlinClasses]))
+        getSourceDirectories().setFrom(files([
+                "$project.projectDir/src/main/java",
+                "$project.projectDir/src/${variantName}/java",
+                "$project.projectDir/src/main/kotlin",
+                "$project.projectDir/src/${variantName}/kotlin"
+        ]))
+        getExecutionData().setFrom(files("${project.buildDir}/outputs/unit_test_code_coverage/${variantName}UnitTest/${testTaskName}.exec"))
+    }
 }

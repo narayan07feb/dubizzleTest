@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
+    id 'jacoco'
+
 }
 apply from: '../jacoco.gradle'
 
@@ -20,8 +22,14 @@ android {
     }
     testOptions {
         unitTests {
+            all {
+                jacoco {
+                    includeNoLocationClasses = true
+                }
+            }
             includeAndroidResources = true
         }
+
         unitTests.returnDefaultValues = true
     }
 

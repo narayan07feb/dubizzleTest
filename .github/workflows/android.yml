@@ -1,10 +1,7 @@
 name: Android CI
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
 
 jobs:
   build:
@@ -25,14 +22,14 @@ jobs:
     - name: Run Coverage
       run: |
             chmod +x gradlew
-            ./gradlew coverageReport
+            ./gradlew testDebugUnitTestCoverageVerification
 
 
     - name: Add coverage to PR
       id: jacoco
       uses: madrapps/jacoco-report@v1.3
       with:
-        paths: ${{github.workspace}}/app/build/reports/jacoco.xml
+        paths: ${{github.workspace}}/app/build/reports/jacoco/testDebugUniTestCoverage/testDebugUniTestCoverage.xml
         token: ${{secrets.GITHUB_TOKEN}}
         min-coverage-overall: 40
         min-coverage-changed-files: 60
