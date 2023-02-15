@@ -40,6 +40,11 @@ jobs:
         name: test-coverage-report
         path: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
 
+    - name: Set Actions Allow Unsecure Commands
+      run: |
+        echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+        
+
     - name: Set Artifact URL
       run: echo "::set-env name=ARTIFACT_URL::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
 
