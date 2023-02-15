@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
-
 }
 apply from: '../jacoco.gradle'
 
@@ -28,12 +27,14 @@ android {
 
     buildTypes {
         release {
+            enableUnitTestCoverage false
             testCoverageEnabled false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             testCoverageEnabled true
+            enableUnitTestCoverage true
         }
     }
     compileOptions {
@@ -61,7 +62,6 @@ android {
         test {
             java.srcDirs += "src/sharedTest/java"
             resources.srcDirs += "src/sharedTest/resources"
-
         }
     }
 }

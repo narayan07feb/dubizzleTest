@@ -38,9 +38,9 @@ class ListingActivity : AppCompatActivity(), Callback<IResults> {
             recyclerview.adapter = adapter;
         }
 
-        dataViewModel.results.observe(this, {
+        dataViewModel.results.observe(this) {
             updatedata(it.result)
-        });
+        };
         dataViewModel.fetchData()
 
 
@@ -63,6 +63,6 @@ class ListingActivity : AppCompatActivity(), Callback<IResults> {
 
         val intent = Intent(this, DetailActivity::class.java);
         intent.putExtra(CommonConstant.DATA, item)
-        startActivity(intent, transitionActivityOptions.toBundle());
+        startActivity(intent, transitionActivityOptions?.toBundle());
     }
 }
