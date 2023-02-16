@@ -1,5 +1,3 @@
-import groovy.json.JsonSlurperClassic
-
 apply plugin: 'jacoco'
 jacoco {
     toolVersion = "0.8.7"
@@ -134,7 +132,6 @@ def createVariantCoverage(variant) {
 
         getExecutionData().setFrom(files("${project.buildDir}/outputs/unit_test_code_coverage/${variantName}UnitTest/${testTaskName}.exec"))
 
-
     }
 
     // Add unit test coverage verification tasks
@@ -155,25 +152,31 @@ def createVariantCoverage(variant) {
                 "$project.projectDir/src/${variantName}/kotlin"
         ]))
         getExecutionData().setFrom(files("${project.buildDir}/outputs/unit_test_code_coverage/${variantName}UnitTest/${testTaskName}.exec"))
-        def coverageReportFile = file("${buildDir}/reports/jacoco/testDebugUnitTestCoverage/html/index.html")
-        def coverageReport = new XmlSlurper().parseText(coverageReportFile.text)
-        def branchCoverage = coverageReport.body.div.find { it.@class == 'group' }.div[1].table.tr[1].td[4].div.text().toDouble()
 
-        def threshold = 70 // Set the branch coverage threshold here
-        println "Branch coverage is greater than $threshold% ($branchCoverage%), continuing build"
-        def accessToken = System.getenv("GITHUB_ACCESS_TOKEN")
-        def headSha = getHeadSha()
-        def command = "curl -s -H \"Authorization: token ${accessToken}\" \
+        doLast {
+            def coverageReportFile = file("${buildDir}/reports/jacoco/testDebugUnitTestCoverage/html/index.html")
+//            @Grab('org.jsoup:jsoup:1.7.1')
+//            def coverageReport = Jsoup.parse(coverageReportFile, "UTF-8")
+//            def branchCoverage = coverageReport.body.div.find { it.@class == 'group' }.div[1].table.tr[1].td[4].div.text().toDouble()
+//
+//            def threshold = 70 // Set the branch coverage threshold here
+//            println "Branch coverage is greater than $threshold% ($branchCoverage%), continuing build"
+            def accessToken = System.getenv("GITHUB_ACCESS_TOKEN")
+            def headSha = getHeadSha()
+            def command = "curl -s -H \"Authorization: token ${accessToken}\" \
         -X POST \
         -H \"Content-Type: text/html\" \
         --data-binary @${coverageReportFile} \
         https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/statuses/${headSha}"
-        exec {
-            commandLine command.split(" ")
+            exec {
+                commandLine command.split(" ")
+            }
         }
     }
 
 }
+
+
 static def getHeadSha() {
     def branch = 'refs/heads/' + System.getenv('GITHUB_REF').tokenize('/').last()
     def process = "git rev-parse $branch".execute()
