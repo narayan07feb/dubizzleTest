@@ -1,6 +1,6 @@
 apply plugin: 'jacoco'
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.2"
 }
 project.afterEvaluate {
     if (android.hasProperty("applicationVariants")) {
@@ -115,6 +115,7 @@ def createVariantCoverage(variant) {
         description = "Generate Jacoco coverage reports for the ${variantName.capitalize()} build."
 
         reports {
+            json.enabled true
             xml.enabled = true
             html.enabled = true
         }
@@ -161,6 +162,7 @@ def createVariantCoverage(variant) {
 //
 //            def threshold = 70 // Set the branch coverage threshold here
 //            println "Branch coverage is greater than $threshold% ($branchCoverage%), continuing build"
+            println "https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/statuses/${headSha}"
             def accessToken = System.getenv("GITHUB_ACCESS_TOKEN")
             def headSha = getHeadSha()
             def command = "curl -s -H \"Authorization: token ${accessToken}\" \
