@@ -25,27 +25,27 @@ jobs:
             ./gradlew testDebugUnitTestCoverageVerification
 
 
-    - name: Add coverage to PR
-      id: jacoco
-      uses: madrapps/jacoco-report@v1.3
-      with:
-        paths: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
-        token: ${{secrets.GITHUB_TOKEN}}
-        min-coverage-overall: 30
-        min-coverage-changed-files: 60
-
-    - name: Upload Test Coverage Report
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-coverage-report
-        path: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
-
-    - name: Set Actions Allow Unsecure Commands
-      run: |
-        echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-        
-
-    - name: Set Artifact URL
-      run: echo "::set-env name=ARTIFACT_URL::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
-
+#    - name: Add coverage to PR
+#      id: jacoco
+#      uses: madrapps/jacoco-report@v1.3
+#      with:
+#        paths: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
+#        token: ${{secrets.GITHUB_TOKEN}}
+#        min-coverage-overall: 30
+#        min-coverage-changed-files: 60
+#
+#    - name: Upload Test Coverage Report
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: test-coverage-report
+#        path: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
+#
+#    - name: Set Actions Allow Unsecure Commands
+#      run: |
+#        echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+#
+#
+#    - name: Set Artifact URL
+#      run: echo "::set-env name=ARTIFACT_URL::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
+#
 

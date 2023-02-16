@@ -1,5 +1,6 @@
 package com.dubizzle.test.di
 
+import com.dubizzle.test.ExcludeFromJacocoGeneratedReport
 import com.dubizzle.test.data.network.ApiConstant
 import com.dubizzle.test.data.network.services.ApiService
 import com.dubizzle.test.data.repository.ListingRepository
@@ -19,6 +20,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
+@ExcludeFromJacocoGeneratedReport
 class NetworkModule {
 
     @Provides

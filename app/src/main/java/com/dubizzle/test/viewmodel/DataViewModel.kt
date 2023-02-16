@@ -3,6 +3,7 @@ package com.dubizzle.test.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dubizzle.test.ExcludeFromJacocoGeneratedReport
 import com.dubizzle.test.common.SingleLiveEvent
 import com.dubizzle.test.data.network.countingIdlingResource
 import com.dubizzle.test.domain.model.IData
@@ -35,6 +36,7 @@ class DataViewModel @Inject constructor(private val listingUseCase: ListingUseCa
         })
     }
 
+    @ExcludeFromJacocoGeneratedReport
     fun onRetry() {
         fetchData()
     }

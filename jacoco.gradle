@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurperClassic
+
 apply plugin: 'jacoco'
 jacoco {
     toolVersion = "0.8.7"
@@ -137,6 +139,28 @@ def createVariantCoverage(variant) {
                     .text =~ /Total[^%]*>(\d?\d?\d?%)/
             if (m) {
                 println "Test coverage: ${m[0][1]}"
+            }
+
+                // Attach the JaCoCo coverage report to the GitHub pull request.
+                if (System.getenv("GITHUB_EVENT_NAME") == "pull_request") {
+                    def prNumber = System.getenv("GITHUB_REF").replaceAll("refs/pull/", "").replaceAll("/merge", "")
+                    def apiUrl = "https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/pulls/$prNumber"
+                    def accessToken = System.getenv("GITHUB_TOKEN")
+                    def result = sh(script: "curl -H \"Authorization: token ${accessToken}\" ${apiUrl}", returnStdout: true)
+                    def jsonSlurper = new JsonSlurperClassic()
+                    def pr = jsonSlurper.parseText(result)
+                    def headSha = pr.head.sha
+
+                    def coverageFile = new File("$buildDir/reports/jacoco/jacocoTestReport/html/index.html")
+                    if (coverageFile.exists()) {
+                        sh(script: "curl -s -H \"Authorization: token ${accessToken}\" \
+                    -H \"Accept: application/vnd.github.antiope-preview+json\" \
+                    -X POST \
+                    -H \"Content-Type: text/html\" \
+                    --data-binary @${coverageFile} \
+                    https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/statuses/${headSha}")
+                    }
+
             }
         }
     }
