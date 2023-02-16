@@ -134,35 +134,7 @@ def createVariantCoverage(variant) {
 
         getExecutionData().setFrom(files("${project.buildDir}/outputs/unit_test_code_coverage/${variantName}UnitTest/${testTaskName}.exec"))
 
-        doLast {
-            def m = new File("${project.buildDir}/reports/jacoco/${testTaskName}Coverage/html/index.html")
-                    .text =~ /Total[^%]*>(\d?\d?\d?%)/
-            if (m) {
-                println "Test coverage: ${m[0][1]}"
-            }
 
-                // Attach the JaCoCo coverage report to the GitHub pull request.
-                if (System.getenv("GITHUB_EVENT_NAME") == "pull_request") {
-                    def prNumber = System.getenv("GITHUB_REF").replaceAll("refs/pull/", "").replaceAll("/merge", "")
-                    def apiUrl = "https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/pulls/$prNumber"
-                    def accessToken = System.getenv("GITHUB_TOKEN")
-                    def result = sh(script: "curl -H \"Authorization: token ${accessToken}\" ${apiUrl}", returnStdout: true)
-                    def jsonSlurper = new JsonSlurperClassic()
-                    def pr = jsonSlurper.parseText(result)
-                    def headSha = pr.head.sha
-
-                    def coverageFile = new File("$buildDir/reports/jacoco/jacocoTestReport/html/index.html")
-                    if (coverageFile.exists()) {
-                        sh(script: "curl -s -H \"Authorization: token ${accessToken}\" \
-                    -H \"Accept: application/vnd.github.antiope-preview+json\" \
-                    -X POST \
-                    -H \"Content-Type: text/html\" \
-                    --data-binary @${coverageFile} \
-                    https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/statuses/${headSha}")
-                    }
-
-            }
-        }
     }
 
     // Add unit test coverage verification tasks
@@ -183,5 +155,28 @@ def createVariantCoverage(variant) {
                 "$project.projectDir/src/${variantName}/kotlin"
         ]))
         getExecutionData().setFrom(files("${project.buildDir}/outputs/unit_test_code_coverage/${variantName}UnitTest/${testTaskName}.exec"))
+        def coverageReportFile = file("${buildDir}/reports/jacoco/testDebugUnitTestCoverage/html/index.html")
+        def coverageReport = new XmlSlurper().parseText(coverageReportFile.text)
+        def branchCoverage = coverageReport.body.div.find { it.@class == 'group' }.div[1].table.tr[1].td[4].div.text().toDouble()
+
+        def threshold = 70 // Set the branch coverage threshold here
+        println "Branch coverage is greater than $threshold% ($branchCoverage%), continuing build"
+        def accessToken = System.getenv("GITHUB_ACCESS_TOKEN")
+        def headSha = getHeadSha()
+        def command = "curl -s -H \"Authorization: token ${accessToken}\" \
+        -X POST \
+        -H \"Content-Type: text/html\" \
+        --data-binary @${coverageReportFile} \
+        https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/statuses/${headSha}"
+        exec {
+            commandLine command.split(" ")
+        }
     }
+
 }
+static def getHeadSha() {
+    def branch = 'refs/heads/' + System.getenv('GITHUB_REF').tokenize('/').last()
+    def process = "git rev-parse $branch".execute()
+    process.text.trim()
+}
+
