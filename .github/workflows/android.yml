@@ -38,7 +38,7 @@ jobs:
       env:
         PR_NUMBER: ${{ github.event.number }}
       run: |
-          git fetch pull
+          git fetch
           git checkout -b gh-pages
           cp -R ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/* ${{ env.PR_NUMBER }}/
           git add --all
