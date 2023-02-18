@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Model.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.dubizzle.test.data.model</a> &gt; <span class="el_source">Model.kt</span></div><h1>Model.kt</h1><pre class="source lang-java linenums">package com.dubizzle.test.data.model
+
+import com.dubizzle.test.domain.model.IData
+import com.dubizzle.test.domain.model.IPagination
+import com.dubizzle.test.domain.model.IResults
+import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+
+<span class="nc" id="L9">@Parcelize</span>
+<span class="nc" id="L10">class Data(</span>
+<span class="nc" id="L11">    @SerializedName(&quot;results&quot;)</span>
+<span class="fc" id="L12">    override val result: List&lt;Results&gt;,</span>
+<span class="nc" id="L13">    @SerializedName(&quot;pagination&quot;)</span>
+<span class="nc" id="L14">    override val pagination: Pagination</span>
+) : IData
+
+<span class="nc" id="L17">@Parcelize</span>
+<span class="nc" id="L18">class Results(</span>
+<span class="nc" id="L19">    @SerializedName(&quot;created_at&quot;)</span>
+<span class="nc" id="L20">    override val createdAt: String,</span>
+<span class="nc" id="L21">    @SerializedName(&quot;price&quot;)</span>
+<span class="nc" id="L22">    override val price: String,</span>
+<span class="nc" id="L23">    @SerializedName(&quot;name&quot;)</span>
+<span class="nc" id="L24">    override val name: String,</span>
+<span class="nc" id="L25">    @SerializedName(&quot;uid&quot;)</span>
+<span class="nc" id="L26">    override val uid: String,</span>
+<span class="nc" id="L27">    @SerializedName(&quot;image_ids&quot;)</span>
+<span class="nc" id="L28">    override val imageIds: List&lt;String&gt;,</span>
+<span class="nc" id="L29">    @SerializedName(&quot;image_urls&quot;)</span>
+<span class="nc" id="L30">    override val imageUrls: List&lt;String&gt;,</span>
+<span class="nc" id="L31">    @SerializedName(&quot;image_urls_thumbnails&quot;)</span>
+<span class="nc" id="L32">    override val imageUrlsThumbnails: List&lt;String&gt;</span>
+) : IResults
+
+<span class="nc" id="L35">@Parcelize</span>
+<span class="nc" id="L36">class Pagination(</span>
+<span class="nc" id="L37">    @SerializedName(&quot;key&quot;)</span>
+<span class="nc" id="L38">    override val key: String</span>
+) : IPagination
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
