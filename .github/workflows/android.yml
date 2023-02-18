@@ -40,6 +40,8 @@ jobs:
       run: |
           git fetch
           git checkout -b gh-pages
+          mkdir -p ${{ env.PR_NUMBER }}
+          rm -i ${{ env.PR_NUMBER }}/*
           cp -R ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/* ${{ env.PR_NUMBER }}/
           git add --all
           git commit -m "Add coverage report ${PR_NUMBER}"
