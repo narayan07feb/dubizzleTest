@@ -24,21 +24,27 @@ jobs:
             chmod +x gradlew
             ./gradlew testDebugUnitTestCoverageVerification
 
-    - name: Deploy coverage report
-      uses: peaceiris/actions-gh-pages@v3
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        destination_dir: ${{ env.PR_NUMBER }}
-    - name: Deploy coverage report v2
-      env:
-        PR_NUMBER: ${{ github.event.number }}
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git fetch 
-        git checkout -b gh-pages
-        mkdir -p ${{ env.PR_NUMBER }}
-        cp -R ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/* ${{ env.PR_NUMBER }}/
-        git add --all
-        git commit -m "Add coverage report ${PR_NUMBER}"
-        git push origin gh-pages
+        folder: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
+        clean: true
+        target-folder: ${{ github.event.number }}
+#    - name: Deploy coverage report
+#      uses: peaceiris/actions-gh-pages@v3
+#      with:
+#        github_token: ${{ secrets.GITHUB_TOKEN }}
+#        destination_dir: ${{ env.PR_NUMBER }}
+#    - name: Deploy coverage report v2
+#      env:
+#        PR_NUMBER: ${{ github.event.number }}
+#      run: |
+#        git config --global user.name "GitHub Actions"
+#        git config --global user.email "actions@github.com"
+#        git fetch
+#        git checkout -b gh-pages
+#        mkdir -p ${{ env.PR_NUMBER }}
+#        cp -R ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/* ${{ env.PR_NUMBER }}/
+#        git add --all
+#        git commit -m "Add coverage report ${PR_NUMBER}"
+#        git push origin gh-pages
