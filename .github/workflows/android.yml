@@ -34,14 +34,13 @@ jobs:
         min-coverage-overall: 30
         min-coverage-changed-files: 60
 
-    - name: Upload Test Coverage Report
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-coverage-report
-        path: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
-
     - name: Deploy coverage report
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
+      env:
+        PR_NUMBER: ${{ github.event.number }}
+      run: |
+          git checkout gh-pages
+          cp -R ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/* ${{ env.PR_NUMBER }}/
+          git add --all
+          git commit -m "Add coverage report ${PR_NUMBER}"
+          git push origin gh-pages
+        
