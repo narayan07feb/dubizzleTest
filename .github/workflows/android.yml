@@ -33,22 +33,10 @@ jobs:
         token: ${{secrets.GITHUB_TOKEN}}
         min-coverage-overall: 30
         min-coverage-changed-files: 60
-    - name: Set up Git
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
 
     - name: Deploy coverage report
-      env:
-        PR_NUMBER: ${{ github.event.number }}
-      run: |
-          git fetch
-          git checkout -b gh-pages
-          git config pull.ff only
-          git pull origin gh-pages   
-          mkdir -p ${{ env.PR_NUMBER }}
-          cp -R ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/* ${{ env.PR_NUMBER }}/
-          git add --all
-          git commit -m "Add coverage report ${PR_NUMBER}"
-          git push origin gh-pages
-        
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
+        destination_dir: ${{ env.PR_NUMBER }}
