@@ -102,7 +102,9 @@ ext.excludes = [
         '**/*Adapter*.*',
         '**/*ViewHolder*.*',
         '**/*ItemDecoration*.*',
-        '**/*LayoutManager*.*'
+        '**/*LayoutManager*.*',
+        '**/*ExcludeFromJacocoGeneratedReport.class',
+        '**/*ExcludeFromJacocoGeneratedReport'
 
 ]
 def createVariantCoverage(variant) {
@@ -138,7 +140,7 @@ def createVariantCoverage(variant) {
     tasks.create(name: "${testTaskName}CoverageVerification", type: JacocoCoverageVerification, dependsOn: "${testTaskName}Coverage") {
         tasks.withType(Test) {
             jacoco.includeNoLocationClasses = true
-            jacoco.excludes = ['jdk.internal.*']
+            jacoco.excludes = ['jdk.internal.*','**/*ExcludeFromJacocoGeneratedReport.class' , '**/*ExcludeFromJacocoGeneratedReport']
         }
         group = "Reporting"
         description = "Verifies Jacoco coverage for the ${variantName.capitalize()} build."
@@ -153,26 +155,6 @@ def createVariantCoverage(variant) {
         ]))
         getExecutionData().setFrom(files("${project.buildDir}/outputs/unit_test_code_coverage/${variantName}UnitTest/${testTaskName}.exec"))
 
-        doLast {
-            def coverageReportFile = file("${buildDir}/reports/jacoco/testDebugUnitTestCoverage/html/index.html")
-//            @Grab('org.jsoup:jsoup:1.7.1')
-//            def coverageReport = Jsoup.parse(coverageReportFile, "UTF-8")
-//            def branchCoverage = coverageReport.body.div.find { it.@class == 'group' }.div[1].table.tr[1].td[4].div.text().toDouble()
-//
-//            def threshold = 70 // Set the branch coverage threshold here
-//            println "Branch coverage is greater than $threshold% ($branchCoverage%), continuing build"
-            println "https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/statuses/${headSha}"
-            def accessToken = System.getenv("GITHUB_ACCESS_TOKEN")
-            def headSha = getHeadSha()
-            def command = "curl -s -H \"Authorization: token ${accessToken}\" \
-        -X POST \
-        -H \"Content-Type: text/html\" \
-        --data-binary @${coverageReportFile} \
-        https://api.github.com/repos/$System.env.GITHUB_REPOSITORY/statuses/${headSha}"
-            exec {
-                commandLine command.split(" ")
-            }
-        }
     }
 
 }
