@@ -40,12 +40,8 @@ jobs:
         name: test-coverage-report
         path: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
 
-    - name: Set Actions Allow Unsecure Commands
-      run: |
-        echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-
-
-    - name: Set Artifact URL
-      run: echo "::set-env name=ARTIFACT_URL::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
-
-
+    - name: Deploy coverage report
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
