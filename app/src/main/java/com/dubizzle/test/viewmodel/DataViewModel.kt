@@ -16,9 +16,13 @@ class DataViewModel @Inject constructor(private val listingUseCase: ListingUseCa
     private var mResults = SingleLiveEvent<IData>();
     val results = mResults as LiveData<IData>
     private var mLoader = SingleLiveEvent<Boolean>();
+
+    @ExcludeFromJacocoGeneratedReport
     val loader = mLoader as LiveData<Boolean>;
 
     private var mError = SingleLiveEvent<Boolean>();
+
+    @ExcludeFromJacocoGeneratedReport
     val error = mError as LiveData<Boolean>
 
     fun fetchData() {

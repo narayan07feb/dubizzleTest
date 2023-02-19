@@ -102,9 +102,7 @@ ext.excludes = [
         '**/*Adapter*.*',
         '**/*ViewHolder*.*',
         '**/*ItemDecoration*.*',
-        '**/*LayoutManager*.*',
-        '**/*ExcludeFromJacocoGeneratedReport.class',
-        '**/*ExcludeFromJacocoGeneratedReport'
+        '**/*LayoutManager*.*'
 
 ]
 def createVariantCoverage(variant) {
@@ -140,7 +138,7 @@ def createVariantCoverage(variant) {
     tasks.create(name: "${testTaskName}CoverageVerification", type: JacocoCoverageVerification, dependsOn: "${testTaskName}Coverage") {
         tasks.withType(Test) {
             jacoco.includeNoLocationClasses = true
-            jacoco.excludes = ['jdk.internal.*','**/*ExcludeFromJacocoGeneratedReport.class' , '**/*ExcludeFromJacocoGeneratedReport']
+            jacoco.excludes = ['jdk.internal.*']
         }
         group = "Reporting"
         description = "Verifies Jacoco coverage for the ${variantName.capitalize()} build."
