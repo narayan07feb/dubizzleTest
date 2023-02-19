@@ -10,15 +10,12 @@ buildscript {
         classpath "com.android.tools.build:gradle:7.3.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.44'
-        classpath 'nl.neotech.plugin:android-root-coverage-plugin:1.6.0'
+        classpath "org.jacoco:org.jacoco.core:0.8.7"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-plugins {
-    id "nl.neotech.plugin.rootcoverage" version "1.6.0"
-}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dubizzle.test.ExcludeFromJacocoGeneratedReport
 import com.dubizzle.test.adapter.DataListAdapter
 import com.dubizzle.test.callback.Callback
 import com.dubizzle.test.common.CommonConstant
@@ -17,6 +18,7 @@ import com.dubizzle.test.viewmodel.DataViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
+@ExcludeFromJacocoGeneratedReport
 @AndroidEntryPoint
 class ListingActivity : AppCompatActivity(), Callback<IResults> {
 

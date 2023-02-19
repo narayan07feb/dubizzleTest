@@ -9,8 +9,10 @@ import com.dubizzle.test.callback.Callback
 import com.dubizzle.test.databinding.RowListBinding
 import com.dubizzle.test.domain.model.IResults
 import android.util.Pair as sharedPair
+import com.dubizzle.test.ExcludeFromJacocoGeneratedReport
 
 
+@ExcludeFromJacocoGeneratedReport
 class DataListAdapter(
     private val context: Context,
     private val items: ArrayList<IResults>,

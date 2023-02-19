@@ -1,10 +1,7 @@
 name: Android CI
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
 
 jobs:
   build:
@@ -25,16 +22,29 @@ jobs:
     - name: Run Coverage
       run: |
             chmod +x gradlew
-            ./gradlew coverageReport
+            ./gradlew testDebugUnitTestCoverageVerification
 
-
-    - name: Add coverage to PR
-      id: jacoco
-      uses: madrapps/jacoco-report@v1.3
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
-        paths: ${{github.workspace}}/app/build/reports/jacoco.xml
-        token: ${{secrets.GITHUB_TOKEN}}
-        min-coverage-overall: 40
-        min-coverage-changed-files: 60
-
-
+        folder: ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/
+        clean: true
+        target-folder: ${{ github.event.number }}
+#    - name: Deploy coverage report
+#      uses: peaceiris/actions-gh-pages@v3
+#      with:
+#        github_token: ${{ secrets.GITHUB_TOKEN }}
+#        destination_dir: ${{ env.PR_NUMBER }}
+#    - name: Deploy coverage report v2
+#      env:
+#        PR_NUMBER: ${{ github.event.number }}
+#      run: |
+#        git config --global user.name "GitHub Actions"
+#        git config --global user.email "actions@github.com"
+#        git fetch
+#        git checkout -b gh-pages
+#        mkdir -p ${{ env.PR_NUMBER }}
+#        cp -R ${{github.workspace}}/app/build/reports/jacoco/testDebugUnitTestCoverage/html/* ${{ env.PR_NUMBER }}/
+#        git add --all
+#        git commit -m "Add coverage report ${PR_NUMBER}"
+#        git push origin gh-pages

@@ -6,10 +6,12 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dubizzle.test.ExcludeFromJacocoGeneratedReport;
 import com.dubizzle.test.common.CommonConstant;
 import com.dubizzle.test.data.model.Results;
 import com.dubizzle.test.databinding.ActivityDetailBinding;
 
+@ExcludeFromJacocoGeneratedReport
 public class DetailActivity extends AppCompatActivity {
 
     ActivityDetailBinding binding;
